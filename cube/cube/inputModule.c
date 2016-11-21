@@ -134,13 +134,124 @@ void mouseMoveHandler( int x, int y ){
 void mouseClickHandler(int x, int y){
     
 }
-
-void setUserView( ){
-  glLoadIdentity( );
-  //gluLookAt( 0.0,0.0,distance,0.0,0.0,0.0,0.0,1.0,0.0 );
-  //angle = angle + 1;
- 
-  glTranslatef( -xdistance, ydistance, -zdistance );
-  glRotatef( angle2, 1.0, 0.0, 0.0 );
-  glRotatef( angle, 0.0, 1.0, 0.0 );
+float vecLength(float x, float y, float z){
+    return sqrtf(powf(x,2) + powf(y,2) + powf(z,2));
+    
 }
+
+void normalizeVector(float vec[]){
+    float arr[3];
+    
+    for (int i = 0; i < 3; ++i){
+        arr[i] = vec[i];
+    }
+    
+    float len = vecLength(vec[0], vec[1], vec[2]);
+    printf("%f", len);
+    printf("%f", sizeof(vec));
+    for (int i = 0; i < 3; ++i) {
+        vec[i] = arr[i]/len;
+        printf(" ");
+        printf("%f", vec[i]);
+    }
+}
+
+float* crossProduct(float *a, float *b)
+{
+    float Product[3];
+    
+    //Cross product formula
+    Product[0] = (a[1] * b[2]) - (a[2] * b[1]);
+    Product[1] = (a[2] * b[0]) - (a[0] * b[2]);
+    Product[2] = (a[0] * b[1]) - (a[1] * b[0]);
+    
+    return Product;
+}
+
+void my_GL_lookAt(float eyeX, float eyeY, float eyeZ, float atX, float atY, float atZ, float upX, float upY, float upZ){
+    
+    float f[3] = { atX - eyeX, atY - eyeY, atZ - eyeZ };
+    float up[3] = {upX, upY, upZ};
+    GLfloat mat[16];
+    //normatlize f
+    printf("%lu", sizeof(f));
+    normalizeVector(f);
+    float *side = crossProduct(f, up);
+    normalizeVector(side);
+    
+    //Recompute up as: up = side x forward
+    float *up_normalized = crossProduct(side, f);
+    normalizeVector(up_normalized);
+    
+    //------------------
+    mat[0] = side[0];
+    mat[4] = side[1];
+    mat[8] = side[2];
+    mat[12] = 0.0;
+    //------------------
+    mat[1] = up[0];
+    mat[5] = up[1];
+    mat[9] = up[2];
+    mat[13] = 0.0;
+    //------------------
+    mat[2] = -f[0];
+    mat[6] = -f[1];
+    mat[10] = -f[2];
+    mat[14] = 0.0;
+    //------------------
+    mat[3] = mat[7] = mat[11] = 0.0;
+    mat[15] = 1.0;
+    
+    
+    glMultMatrixf(mat);
+    glTranslatef(-eyeX, -eyeY, -eyeZ);
+    
+    
+}
+
+void setUserView(){
+    glLoadIdentity( );
+    
+    //  glTranslatef(-distanceX, distanceY, -distanceZ);
+    //  glRotatef( anglex, 1.0, 0.0, 0.0 );
+    //  glRotatef( angley, 0.0, 1.0, 0.0 );
+    
+    // The code below should have exactly the same behavior as the three
+    //lines above.
+    GLdouble eyeX, eyeY, eyeZ;
+    GLdouble atX = 0, atY = 0, atZ = 0;
+    GLdouble upX = 0, upY = 1, upZ = 0;
+    
+    
+    
+    while(angle2 < 0)
+        angle2 += 360;
+    
+    while(angle2 >= 360)
+        angle2 -= 360;
+    
+    if (angle2 > 90 && angle2 < 270)
+        upY = -1;
+    
+    double radian_x = angle2 * (M_PI / 180), radian_y = angle * (M_PI / 180);
+    
+    eyeX = xdistance * cos(radian_y) - sin(radian_y) * sin(radian_x) *
+    ydistance - sin(radian_y) * cos(radian_x) * zdistance;
+    
+    eyeY = -cos(radian_x) * ydistance + sin(radian_x) * zdistance;
+    
+    eyeZ = sin(radian_y) * xdistance - cos(radian_y) * sin(radian_x) *
+    ydistance + cos(radian_y) * cos(radian_x) * zdistance;
+    
+    glulookAt(eyeX, eyeY, eyeZ, atX, atY, atZ, upX, upY, upZ);
+}
+
+// void setUserView( ){
+//   glLoadIdentity( );
+//   //gluLookAt( 0.0,0.0,distance,0.0,0.0,0.0,0.0,1.0,0.0 );
+//   //angle = angle + 1;
+ 
+//   glTranslatef( -xdistance, ydistance, -zdistance );
+//   glRotatef( angle2, 1.0, 0.0, 0.0 );
+//   glRotatef( angle, 0.0, 1.0, 0.0 );
+// }
