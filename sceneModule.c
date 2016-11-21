@@ -105,6 +105,10 @@ void drawScene( ){
   for (i = 0; i < 6; ++i) {
     glBegin(GL_POLYGON);
     glColor3fv(&cubeColors[i][0]);
+	GLfloat mat_shininess[] = { 50.0 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &cubeColors[i][0]);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &cubeColors[i][0]);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
     glVertex4fv(&cubeVertexes[i][0][0]);
     glVertex4fv(&cubeVertexes[i][1][0]);
     glVertex4fv(&cubeVertexes[i][2][0]);
@@ -123,14 +127,34 @@ void drawScene( ){
 
   // Draw revolver cube
   for (i = 0; i < 6; ++i) {
-          glBegin(GL_POLYGON);
-          glColor3fv(&cubeColors2[0][0]);
-          glVertex4fv(&cubeVertexes[i][0][0]);
-          glVertex4fv(&cubeVertexes[i][1][0]);
-          glVertex4fv(&cubeVertexes[i][2][0]);
-          glVertex4fv(&cubeVertexes[i][3][0]);
-          glEnd();
+     glBegin(GL_POLYGON);
+     glColor3fv(&cubeColors2[0][0]);
+	 GLfloat mat_shininess[] = { 50.0 };
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &cubeColors2[0][0]);
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &cubeColors2[0][0]);
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+     glVertex4fv(&cubeVertexes[i][0][0]);
+     glVertex4fv(&cubeVertexes[i][1][0]);
+     glVertex4fv(&cubeVertexes[i][2][0]);
+     glVertex4fv(&cubeVertexes[i][3][0]);
+     glEnd();
   }
   glPopMatrix();
 }
 
+void lightScene() {
+
+	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+	GLfloat light_diffuse[] = { 0.5, 0.5, 0.5, 1.0 };
+	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_position[] = { 3.0, 0.0, 0.0, 0.0 };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	
+	glEnable(GL_LIGHTING);  // Light ON/OFF
+	glEnable(GL_LIGHT0);	// Activate light 0
+
+}
