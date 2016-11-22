@@ -25,6 +25,16 @@ static float cubeColors2[1][4] =
     {0.8, 0.8, 0.0, 1.0},
 };
 
+static float cubeNormals[6][4] =
+{
+	{ -1.0, 0.0, 0.0 },
+	{ 1.0, 0.0, 0.0 },
+	{ 0.0, -1.0, 0.0 },
+	{ 0.0, 1.0, 0.0 },
+	{ 0.0, 0.0, -1.0 },
+	{ 0.0, 0.0, 1.0 },
+};
+
 static float cubeVertexes[6][4][4] =
 {
   {
@@ -76,7 +86,7 @@ void my_GL_translate(float x, float y, float z) {
 void my_GL_rotate(float angle, float x, float y, float z) {
 	float c = cos(angle*M_PI/180);
 	float s = sin(angle*M_PI/180);
-	// Normalize xyz ??
+	// Normalize xyz ?
 	// Rotation matrix stored column wise
 	GLfloat rot[4][4] = { x*x*(1-c)+c, y*x*(1-c)+z*s, x*z*(1-c)-y*s, 0.0,
 						  x*y*(1-c)-z*s, y*y*(1-c)+c, y*z*(1-c)+x*s, 0.0,
@@ -105,6 +115,7 @@ void drawScene( ){
   for (i = 0; i < 6; ++i) {
     glBegin(GL_POLYGON);
     glColor3fv(&cubeColors[i][0]);
+	glNormal3fv(&cubeNormals[i][0]);
 	GLfloat mat_shininess[] = { 50.0 };
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &cubeColors[i][0]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &cubeColors[i][0]);
@@ -129,6 +140,7 @@ void drawScene( ){
   for (i = 0; i < 6; ++i) {
      glBegin(GL_POLYGON);
      glColor3fv(&cubeColors2[0][0]);
+	 glNormal3fv(&cubeNormals[i][0]);
 	 GLfloat mat_shininess[] = { 50.0 };
 	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, &cubeColors2[0][0]);
 	 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, &cubeColors2[0][0]);
@@ -144,10 +156,10 @@ void drawScene( ){
 
 void lightScene() {
 
-	GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat light_diffuse[] = { 0.5, 0.5, 0.5, 1.0 };
-	GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_position[] = { 3.0, 0.0, 0.0, 0.0 };
+	GLfloat light_ambient[] = { .3, .3, .3, 1.0 };
+	GLfloat light_diffuse[] = { 0.4, 0.4, 0.4, 1.0 };
+	GLfloat light_specular[] = { 1, 1, 1, 1.0 };
+	GLfloat light_position[] = { 10.0, 0.0, 0.0, 0.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -158,3 +170,4 @@ void lightScene() {
 	glEnable(GL_LIGHT0);	// Activate light 0
 
 }
+
