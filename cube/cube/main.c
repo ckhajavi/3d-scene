@@ -14,9 +14,11 @@
 #include "sceneModule.h"
 #include "viewModule.h"
 #include "inputModule.h"
+#define _USE_MATH_DEFINES
 
 int window;
 int updateFlag;
+
 
 perspectiveData pD;
 
@@ -28,7 +30,11 @@ void cleanup( int sig ){
   exit( 0 );
 }
 
-
+void my_GL_perspective (GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar){
+    double f = 1/tan(fovy *M_PI/(180*2));
+    GLdouble persp_matrix[4][4] = {f/aspect, 0,0,0,0, f,0,0,0, 0, (zFar+zNear)/(zNear-zFar), -1,0,0, (2*zFar*zNear)/(zNear-zFar), 0};
+    glMultMatrixd(persp_matrix);
+}
 //##########################################3
 // OpenGL Display function
 #ifdef __cplusplus
@@ -65,7 +71,8 @@ void initDisplay( ){
   glMatrixMode( GL_PROJECTION ); //tell stack what matrix to work on
   glLoadIdentity( );
   
-  gluPerspective( pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane ); //specifies a viewing frustum into the world coordinate system
+  //gluPerspective( pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane ); //specifies a viewing frustum into the world coordinate system
+  my_GL_perspective( pD.fieldOfView, pD.aspect, pD.nearPlane, pD.farPlane ); //specifies a viewing frustum into the world coordinate system
 
   glEnable( GL_DEPTH_TEST );
   glDisable( GL_CULL_FACE );
